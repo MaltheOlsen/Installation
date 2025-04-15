@@ -1,0 +1,7 @@
+# Installation af Wazuh
+
+# Installer Indexer, manager og dashboard:
+curl -sO https://packages.wazuh.com/4.11/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
+
+# Installer agenter
+WAZUH_MANAGER="172.30.2.148" apt-get install wazuh-agent
