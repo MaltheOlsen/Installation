@@ -1,0 +1,27 @@
+# Hardware Recommendations
+#   Minimum - 4GB RAM - 2 CPU Cores
+#   Recommended - 16GB RAM - 8 CPU Cores
+
+## Initial configuration ##
+# 1. Download the Wazuh installation assistant and the configuration file.
+curl -sO https://packages.wazuh.com/4.11/wazuh-install.sh
+curl -sO https://packages.wazuh.com/4.11/config.yml
+
+# 2. Edit ./config.yml and replace the node names and IP values with the corresponding names and IP addresses. You need to do this for all Wazuh server, Wazuh indexer, and Wazuh dashboard nodes. Add as many node fields as needed.
+
+# 3. Run the Wazuh installation assistant with the option --generate-config-files to generate the Wazuh cluster key, certificates, and passwords necessary for installation. You can find these files in ./wazuh-install-files.tar.
+bash wazuh-install.sh --generate-config-files
+
+# 4. Copy the wazuh-install-files.tar file to all the servers of the distributed deployment, including the Wazuh server, the Wazuh indexer, and the Wazuh dashboard nodes. This can be done by using the scp utility.
+
+## Wazuh indexer nodes installation ##
+# 1. Download the Wazuh installation assistant.
+curl -sO https://packages.wazuh.com/4.11/wazuh-install.sh
+
+# 2. Run the Wazuh installation assistant with the option --wazuh-indexer and the node name to install and configure the Wazuh indexer. The node name must be the same one used in config.yml for the initial configuration, for example, node-1.
+## Note Make sure that a copy of wazuh-install-files.tar, created during the initial configuration step, is placed in your working directory.
+bash wazuh-install.sh --wazuh-indexer node-1
+
+## Cluster initialization ##
+# 1. Run the Wazuh installation assistant with option --start-cluster on any Wazuh indexer node to load the new certificates information and start the cluster.
+bash wazuh-install.sh --start-cluster
