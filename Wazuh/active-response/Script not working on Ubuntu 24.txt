@@ -1,0 +1,5 @@
+# Hvis scripts ikke virker i Ubuntu 24, kør:
+cat -v /var/ossec/active-response/bin/remove-threat.sh | head -1
+
+# Hvis den viser #!/bin/bash^M så kør følgende:
+dos2unix /var/ossec/active-response/bin/remove-threat.sh
