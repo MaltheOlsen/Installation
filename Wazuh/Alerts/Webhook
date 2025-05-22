@@ -1,0 +1,8 @@
+# De 2 "custom-discord*" filer skal kopires ind i "/var/ossec/integrations/"
+
+<integration>
+    <name>custom-discord</name>
+    <hook_url>https://discord.com/api/webhooks/1374681355794907136/aD_l0-VNSVo0Gf26HN-v3yvy9CaehHsf9yBCxQsvry2vo2g-SsD1xfhmMDfgLzj-PGoc</hook_url>
+    <level>8</level>
+    <alert_format>json</alert_format>
+  </integration>
