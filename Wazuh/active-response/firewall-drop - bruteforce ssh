@@ -1,0 +1,8 @@
+# Tilføjes i ossec.conf
+  <active-response>
+    <disabled>no</disabled>
+    <command>firewall-drop</command>
+    <location>local</location>
+    <rules_id>5763</rules_id>
+    <timeout>600</timeout>
+  </active-response>
