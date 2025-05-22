@@ -1,0 +1,12 @@
+# Der skal i dette tilfæde oprettes en postfix email service på den lokale maskine
+  <global>
+    <email_notification>yes</email_notification>
+    <smtp_server>localhost</smtp_server>
+    <email_from>EMAIL@FROM.dk</email_from>
+    <email_to>EMAIL@TO.dk</email_to>
+  </global>
+
+# Sendes kun email ved en alert på level 12 eller derover
+  <alerts>
+    <email_alert_level>12</email_alert_level>
+  </alerts>
