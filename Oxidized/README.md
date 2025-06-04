@@ -34,7 +34,5 @@ sudo ./Oxidized-AutoInstall.sh
 
 # 🛠️ Script Behavior
  - The script will automatically handle the installation of all required dependencies. 🏗️
- - If any step fails, the script will stop and print an error message. ⚠️
- - After a successful installation, a "completed successfully" message will appear in green. 🎉
 
 # Tyvstjålet fra Kevin T-Rex
