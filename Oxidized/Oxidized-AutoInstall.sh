@@ -1,7 +1,10 @@
 #!/bin/bash
 
 CONFIG_PATH="/etc/oxidized/config"
-HOSTNAME=hostname
+
+echo "Enter your Oxidized hostname:"
+read -rs HOSTNAME
+echo
 
 add-apt-repository universe
 apt install ruby ruby-dev libsqlite3-dev libssl-dev pkg-config cmake libssh2-1-dev libicu-dev zlib1g-dev g++ libyaml-dev apache2
