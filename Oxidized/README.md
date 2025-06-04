@@ -23,7 +23,7 @@ sudo chmod +x Oxidized-AutoInstall.sh
 ```
 
 # 🚀 Running the Script
-After making the script executable, you can run it using the following command:
+- After making the script executable, you can run it using the following command:
 
 ```bash
 sudo ./Oxidized-AutoInstall.sh
