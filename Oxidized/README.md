@@ -30,7 +30,7 @@ sudo ./Oxidized-AutoInstall.sh
 ```
 
 # ⚙️ Add devices to your Oxi and configure a SSL cert
-Configure /etc/oxidized/devices.db, and proper SSL certificate
+- Configure /etc/oxidized/devices.db, and proper SSL certificate
 
 # 🛠️ Script Behavior
  - The script will automatically handle the installation of all required dependencies. 🏗️
