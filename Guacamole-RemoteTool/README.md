@@ -15,7 +15,7 @@ This repository contains an automated installation script for setting up **Guaca
 To fetch the latest version of the `guac-autoinstall.sh` script, run the following command:
 
 ```bash
-wget https://raw.githubusercontent.com/KevinRexFromDk/guacamole/refs/heads/main/guac-autoinstall.sh -O guac-autoinstall.sh
+wget https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Guacamole-RemoteTool/guac-autoinstall.sh?token=GHSAT0AAAAAADED733VO2WGXMJB5BLMJHLA2CAARDQ -O guac-autoinstall.sh
 ```
 
 # ⚙️ Change Execute Permissions
@@ -63,3 +63,5 @@ Enter Guacamole password (default 'Passw0rd'): Passw0rd
 Enter Guacamole database name (default 'guac_db'): guac_db
 Enter Guacamole username (default 'guacadmin'): guacadmin
 ```
+
+# Stjålet fra Kevin
