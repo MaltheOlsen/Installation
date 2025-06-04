@@ -14,7 +14,7 @@ This repository contains an automated installation scripts for setting up **Sema
 To fetch the latest version of the `semaphorePM-autoinstall.sh` script, run the following command:
 
 ```bash
-wget https://raw.githubusercontent.com/KevinRexFromDk/ansible/refs/heads/main/semaphorePM-autoinstall.sh -O semaphorePM-autoinstall.sh
+wget https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Semaphore/semaphorePM-autoinstall.sh?token=GHSAT0AAAAAADED733VVXMSRO4EN3AEMZCO2CAAMRQ
 ```
 
 # ⚙️ Change Execute Permissions
