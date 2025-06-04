@@ -1,0 +1,30 @@
+{
+        "mysql": {
+                "host": "127.0.0.1:3306",
+                "user": "semaphore_user",
+                "pass": "Passw0rd",
+                "name": "semaphore_db"
+        },
+        "dialect": "mysql",
+        "tmp_path": "/tmp/semaphore",
+        "cookie_hash": "it7B7jZmqhMxCsVs/IQXj16KtXGBRC7lonZw/nsZyYw=",
+        "cookie_encryption": "Zn+zFhgCFgwIGEB5BK3TE/Lwr+DtMwqQCQtPBMzaEv8=",
+        "access_key_encryption": "9vLSmtjZs9LfpBB/I9RGyzFEpzOXo75EacwCLH03ajM=",
+        "email_alert": true,
+        "email_sender": "semaphore@localhost",
+        "email_host": "localhost",
+        "email_port": "25",
+        "ldap_enable": true,
+        "ldap_needtls": true,
+        "ldap_binddn": "CN=S100000,OU=System Users,OU=IT,OU=Italy,OU=Users,OU=DatatechnIQ,DC=datatechniq,DC=local",
+        "ldap_bindpassword": "Passw0rd",
+        "ldap_server": "it-bol-01-dc-01.datatechniq.local:636",
+        "ldap_searchdn": "OU=ADM Users,OU=IT,OU=Italy,OU=Users,OU=DatatechnIQ,DC=datatechniq,DC=local",
+        "ldap_searchfilter": "(sAMAccountName=%s)",
+        "ldap_mappings": {
+                "dn": "dn",
+                "mail": "userPrincipalName",
+                "uid": "sAMAccountName",
+                "cn": "cn"
+        }
+ }
