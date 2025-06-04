@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd <uptime-kuma-directory>
+cd uptime-kuma
 
 # Update from git
 git fetch --all
