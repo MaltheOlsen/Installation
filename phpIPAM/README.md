@@ -12,7 +12,7 @@ This repository contains an automated installation script for setting up phpIPAM
 To download the latest version of the **phpipam-autoinstall.sh** script, run the following command:
 
 ```bash
-wget https://raw.githubusercontent.com/KevinRexFromDk/phpIPAM/refs/heads/main/phpIPAM-autoinstall.sh
+wget https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/phpIPAM/phpIPAM-autoinstall.sh?token=GHSAT0AAAAAADED733VYXTKXNHBEDJL5BSA2CAA2BA -O phpIPAM-autoinstall.sh
 ```
 
 # ⚙️ Change Execute Permissions
