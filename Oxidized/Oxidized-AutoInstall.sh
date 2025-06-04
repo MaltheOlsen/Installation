@@ -1,3 +1,5 @@
+#!/bin/bash
+
 CONFIG_PATH="/etc/oxidized/config"
 HOSTNAME=hostname
 
