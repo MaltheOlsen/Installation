@@ -1,0 +1,55 @@
+# filepath: /etc/oxidized/config
+
+---
+rest: 0.0.0.0:8888
+username: s100000
+password: Passw0rd
+model: ios
+resolve_dns: true
+interval: 3600
+use_syslog: false
+debug: false
+run_once: false
+threads: 30
+use_max_threads: false
+timeout: 20
+retries: 3
+prompt: !ruby/regexp /^([\w.@-]+[#>]\s?)$/
+next_adds_job: false
+pid: "/etc/oxidized/pid"
+extensions:
+  oxidized-web:
+    load: true
+crash:
+  directory: "/etc/oxidized/crashes"
+  hostnames: false
+stats:
+  history_size: 10
+input:
+  default: ssh
+  debug: false
+  ssh:
+    secure: false
+  ftp:
+    passive: true
+  utf8_encoded: true
+output:
+  default: git
+  git:
+    user: admin
+    email: admin@localhost
+    repo: "/etc/oxidized/backup.git"
+source:
+  default: csv
+  csv:
+    file: "/etc/oxidized/devices.db"
+    delimiter: !ruby/regexp /:/
+    map:
+      name: 0
+      model: 1
+    gpg: false
+model_map:
+  juniper: junos
+  cisco: ios
+vars:
+  enable: Passw0rd
