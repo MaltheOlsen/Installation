@@ -22,7 +22,7 @@ sudo rm -rf /etc/tomcat9/apache-tomcat-9.0.102 || handle_error "Failed to remove
 sudo rm -f apache-tomcat-9.0.102.tar.gz || handle_error "Failed to remove Tomcat tar file."
 
 echo -e "\e[34mDownloading systemd service file for Tomcat9...\e[0m"
-wget -q https://raw.githubusercontent.com/KevinRexFromDk/guacamole/refs/heads/main/tomcat9.service -O /etc/systemd/system/tomcat9.service || handle_error "Failed to download tomcat9.service file."
+wget -q https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Guacamole-RemoteTool/tomcat9.service -O /etc/systemd/system/tomcat9.service || handle_error "Failed to download tomcat9.service file."
 
 echo -e "\e[34mStarting and enabling Tomcat9 service...\e[0m"
 sudo systemctl start tomcat9 || handle_error "Failed to start Tomcat service."
