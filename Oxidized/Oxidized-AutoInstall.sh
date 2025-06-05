@@ -1,19 +1,14 @@
-#!/bin/bash
-
+SERVICE_FILE="/etc/systemd/system/oxidized.service"
 CONFIG_PATH="/etc/oxidized/config"
+WORKINGDIR="/etc/oxidized"
+HOSTNAME=$(hostname)
 
-echo "Enter your Oxidized hostname:"
-read -rs HOSTNAME
-echo
+sudo add-apt-repository universe
+sudo apt-get install ruby ruby-dev libsqlite3-dev libssl-dev pkg-config cmake libssh2-1-dev libicu-dev zlib1g-dev g++ libyaml-dev
+sudo gem install oxidized
+sudo gem install oxidized-script oxidized-web
 
-add-apt-repository universe
-apt install ruby ruby-dev libsqlite3-dev libssl-dev pkg-config cmake libssh2-1-dev libicu-dev zlib1g-dev g++ libyaml-dev apache2
-
-gem install oxidized
-gem install oxidized-web
-gem install oxidized-script
-
-mkdir /etc/oxidized
+sudo mkdir $WORKINGDIR
 
 echo "Enter your Oxidized username:"
 read -r USERNAME
@@ -30,8 +25,9 @@ echo "Enter the FQDN or IP of this device:"
 read -rs FQDN
 echo
 
-cat > "$CONFIG_PATH" <<EOF
+sudo tee "$WORKINGDIR/config" > /dev/null <<EOF
 ---
+rest: 0.0.0.0:8888
 username: $USERNAME
 password: $PASSWORD
 model: ios
@@ -46,16 +42,12 @@ timeout: 20
 retries: 3
 prompt: !ruby/regexp /^([\w.@-]+[#>]\s?)$/
 next_adds_job: false
-vars: {}
-groups: {}
-group_map: {}
-models: {}
-pid: "/etc/oxidized/pid"
+pid: "$"
 extensions:
   oxidized-web:
     load: true
 crash:
-  directory: "/etc/oxidized/crashes"
+  directory: "$WORKINGDIR/crashes"
   hostnames: false
 stats:
   history_size: 10
@@ -69,55 +61,53 @@ input:
   utf8_encoded: true
 output:
   default: git
-  file:
+  git:
     user: Oxidized
-    email: Oxidized@localhost
-    directory: "/etc/oxidized/backup.git"
+    email: oxidized@localhost
+    repo: "$WORKINGDIR/backup.git"
 source:
   default: csv
   csv:
-    file: "/etc/oxidized/devices.db"
+    file: "$WORKINGDIR/devices.db"
     delimiter: !ruby/regexp /:/
     map:
       name: 0
+      model: 1
+    gpg: false
+model_map:
+  cisco: ios
 vars:
   enable: $ENABLE_PASSWORD
-
 EOF
 
-echo "Oxidized configuration written to $CONFIG_PATH"
-
-cat > "/etc/oxidized/devices.db" <<EOF
+sudo tee "$WORKINGDIR/devices.db" > /dev/null <<EOF
 router1:cisco:192.168.1.1
 router2:cisco:192.168.1.2
 EOF
 echo "Oxidized devices written to /etc/oxidized/devices.db"
 
-cd /etc/oxidized
-git init backup.git
-cd backup.git
-git config user.name "Oxidized"
-git config user.email "oxidized@localhost"
+sudo git init $WORKINGDIR/backup.git
+cd $WORKINGDIR/backup.git
+sudo git config user.name "Oxidized"
+sudo git config user.email "oxidized@localhost"
 
-mkdir /etc/oxidized/crashes
-mkdir /etc/oxidized/pid
-
-
-cat > "/etc/systemd/system/oxidized.service" <<EOF
+sudo tee "$SERVICE_FILE" > /dev/null <<EOF
 [Unit]
 Description=Oxidized Network Configuration Backup Service
 After=network.target
 
 [Service]
-Environment=OXIDIZED_HOME=/etc/oxidized
+Environment=OXIDIZED_HOME=$WORKINGDIR
 ExecStart=/usr/local/bin/oxidized
-User=administrator
-WorkingDirectory=/etc/oxidized
+User=$USER
+WorkingDirectory=$WORKINGDIR
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
 EOF
+
+sudo chown $USER:$USER -R /etc/oxidized
 
 sudo systemctl daemon-reload
 sudo systemctl enable oxidized
@@ -146,9 +136,6 @@ cat > "/etc/apache2/sites-available/oxidized.conf" <<EOF
     ProxyPreserveHost On
     ProxyPass / http://127.0.0.1:8888/
     ProxyPassReverse / http://127.0.0.1:8888/
-
-    ErrorLog ${APACHE_LOG_DIR}/oxidized-error.log
-    CustomLog ${APACHE_LOG_DIR}/oxidized-access.log combined
 </VirtualHost>
 EOF
 
@@ -158,3 +145,4 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 
 a2ensite oxidized.conf
 systemctl restart apache2
+systemctl start oxidized
