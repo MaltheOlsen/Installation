@@ -15,7 +15,7 @@ This repository contains an automated installation script for setting up **Guaca
 To fetch the latest version of the `guac-autoinstall.sh` script, run the following command:
 
 ```bash
-wget https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Guacamole-RemoteTool/guac-autoinstall.sh?token=GHSAT0AAAAAADED733VO2WGXMJB5BLMJHLA2CAARDQ -O guac-autoinstall.sh
+wget https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Guacamole-RemoteTool/guac-autoinstall.sh -O guac-autoinstall.sh
 ```
 
 # ⚙️ Change Execute Permissions
