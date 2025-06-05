@@ -44,6 +44,29 @@ else:
     agent_ = alert_json["agent"]["name"]
 
 # combine message details
+fields = [
+    {
+        "name": "Agent",
+        "value": agent_,
+        "inline": True
+    },
+    {
+        "name": "Level",
+        "value": alert_level,
+        "inline": True
+    }
+]
+
+# Add user field if data.dstuser exists
+dstuser = alert_json.get("data", {}).get("dstuser")
+if dstuser:
+    fields.append({
+        "name": "User",
+        "value": dstuser,
+        "inline": True
+    })
+
+# Final payload
 payload = json.dumps({
     "content": "",
     "embeds": [
@@ -51,18 +74,7 @@ payload = json.dumps({
             "title": f"Wazuh Alert - Rule {alert_json['rule']['id']}",
             "color": color,
             "description": alert_json["rule"]["description"],
-            "fields": [
-                {
-                    "name": "Agent",
-                    "value": agent_,
-                    "inline": True
-                },
-                {
-                    "name": "Level",  # Nyt felt for Level
-                    "value": alert_level,
-                    "inline": True
-                }
-            ]
+            "fields": fields
         }
     ]
 })
