@@ -150,9 +150,25 @@ sudo systemctl enable --now netbox netbox-rq
 
 ## Obtain an SSL Certificate ##
 echo -e "\e[34mSSL Certificate\e[0m"
+
+# Define certificate paths
+KEY_PATH="/etc/ssl/private/netbox.key"
+CRT_PATH="/etc/ssl/certs/netbox.crt"
+
+SUBJECT_DN="/C=/ST=/L=/O=/OU=/CN=netbox.local/emailAddress="
+echo "Generating self-signed SSL certificate and key..."
+
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
--keyout /etc/ssl/private/netbox.key \
--out /etc/ssl/certs/netbox.crt
+-keyout "$KEY_PATH" \
+-out "$CRT_PATH" \
+-subj "$SUBJECT_DN" # Use the -subj option to specify all details
+
+sudo chmod 644 "$CRT_PATH"
+
+echo "Self-signed certificate and key generated successfully:"
+echo "Key: $KEY_PATH"
+echo "Cert: $CRT_PATH"
+
 
 ## HTTP Server Installation NGINX ##
 echo -e "\e[34mNGINX Installation\e[0m"
