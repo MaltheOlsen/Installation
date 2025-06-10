@@ -88,9 +88,8 @@ REDIS = {\
 }' /opt/netbox/netbox/netbox/configuration.py
 
 # SECRET_KEY #
-python3 ../generate_secret_key.py
 SECRET_KEY=$(python3 ../generate_secret_key.py)
-sed -i 's/^SECRET_KEY*/SECRET_KEY = ["'${SECRET_KEY}'"]/' /opt/netbox/netbox/netbox/configuration.py
+sudo sed -i "s/^SECRET_KEY = ['\"].*['\"]$/SECRET_KEY = '${SECRET_KEY}'/" /opt/netbox/netbox/netbox/configuration.py
 
 # Run the Upgrade Script #
 echo -e "\e[34mRunning the upgrade script\e[0m"
@@ -100,8 +99,37 @@ sudo /opt/netbox/upgrade.sh
 echo -e "\e[34mCreating Super User\e[0m"
 source /opt/netbox/venv/bin/activate
 cd /opt/netbox/netbox
-python3 manage.py createsuperuser
----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SUPERUSER_USERNAME="admin"
+SUPERUSER_EMAIL="admin@example.com"
+SUPERUSER_PASSWORD=$(openssl rand -base64 12) # Generates a 12-char random base64 string for password
+
+# You could also use a hardcoded password for testing (not recommended for production):
+# SUPERUSER_PASSWORD="YourSecurePassword123"
+
+# --- Script Logic ---
+
+echo "Creating Django superuser..."
+
+# Set environment variables for the createsuperuser command
+DJANGO_SUPERUSER_USERNAME=$SUPERUSER_USERNAME \
+DJANGO_SUPERUSER_EMAIL=$SUPERUSER_EMAIL \
+DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD \
+python3 manage.py createsuperuser --noinput
+
+if [ $? -eq 0 ]; then
+    echo "Superuser '$SUPERUSER_USERNAME' created successfully."
+    echo "Username: $SUPERUSER_USERNAME"
+    echo "Email: $SUPERUSER_EMAIL"
+    echo "Password: $SUPERUSER_PASSWORD" # Be careful with logging passwords in production
+else
+    echo "Error: Superuser creation failed."
+    # If the user already exists, createsuperuser --noinput will exit with 0.
+    # You might want to add logic to check if the user already exists before attempting to create.
+    # Example: python manage.py shell -c "from django.contrib.auth import get_user_model; User=get_user_model(); print(User.objects.filter(username='admin').exists())"
+fi
+
 # Housekeeping Task #
 sudo ln -s /opt/netbox/contrib/netbox-housekeeping.sh /etc/cron.daily/netbox-housekeeping
 
