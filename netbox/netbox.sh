@@ -53,7 +53,8 @@ cd /opt/netbox/netbox/netbox/
 sudo cp configuration_example.py configuration.py
 
 # ALLOWED_HOSTS #
-sed -i 's/^ALLOWED_HOSTS*/ALLOWED_HOSTS = ["*"]/' /opt/netbox/netbox/netbox/configuration.py
+NETBOX_CONFIG_FILE="/opt/netbox/netbox/netbox/configuration.py"
+sudo sed -i "s/^ALLOWED_HOSTS = .*$/ALLOWED_HOSTS = ['*']/" "$NETBOX_CONFIG_FILE"
 
 # DATABASES #
 sed -i "/^DATABASES = {/,/^}$/c\\
