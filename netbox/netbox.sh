@@ -11,14 +11,14 @@ sudo apt install -y postgresql
 
 ## Database Creation ##
 echo -e "\e[34mDatabase Creation\e[0m"
-sudo -u postgres psql
-
+sudo -u postgres psql<<EOF
 CREATE DATABASE netbox;
 CREATE USER netbox WITH PASSWORD 'Passw0rd';
 ALTER DATABASE netbox OWNER TO netbox;
 \connect netbox;
 GRANT CREATE ON SCHEMA public TO netbox;
 \q
+EOF
 
 # Test database
 # psql --username netbox --password --host localhost netbox
