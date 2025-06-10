@@ -1,13 +1,16 @@
 #!/bin/bash
 
 ## NETBOX ##
+echo -e "\e[34mUpdating and upgrading the system...\e[0m"
 sudo apt update && sudo apt upgrade -y
 
 ## PostgreSQL Database Installation ##
+echo -e "\e[34mPostgreSQL Database Installation\e[0m"
 sudo apt update
 sudo apt install -y postgresql
 
 ## Database Creation ##
+echo -e "\e[34mDatabase Creation\e[0m"
 sudo -u postgres psql
 
 CREATE DATABASE netbox;
@@ -21,12 +24,14 @@ GRANT CREATE ON SCHEMA public TO netbox;
 # psql --username netbox --password --host localhost netbox
 
 ## Redis Installation ##
+echo -e "\e[34mRedis\e[0m"
 sudo apt install -y redis-server
 # Test Redis #
 # verify that your installed version of Redis is at least v4.0 - redis-server -v
 # If successful, you should receive a PONG response from the server. - redis-cli ping
 
 ## NetBox Installation ##
+echo -e "\e[34mNetbox Installation\e[0m"
 sudo apt install -y python3 python3-pip python3-venv python3-dev \
 build-essential libxml2-dev libxslt1-dev libffi-dev libpq-dev \
 libssl-dev zlib1g-dev
@@ -36,12 +41,14 @@ sudo tar -xzf v4.3.1.tar.gz -C /opt
 sudo ln -s /opt/netbox-4.3.1/ /opt/netbox
 
 # Create the NetBox System User #
+echo -e "\e[34mCreating NetBox User\e[0m"
 sudo adduser --system --group netbox
 sudo chown --recursive netbox /opt/netbox/netbox/media/
 sudo chown --recursive netbox /opt/netbox/netbox/reports/
 sudo chown --recursive netbox /opt/netbox/netbox/scripts/
 
 # netbox Configuration #
+echo -e "\e[34mNetBox Configuration\e[0m"
 cd /opt/netbox/netbox/netbox/
 sudo cp configuration_example.py configuration.py
 
@@ -82,11 +89,14 @@ REDIS = {\
 
 # SECRET_KEY #
 python3 ../generate_secret_key.py
+------------------------------------------------------------------------------------------------------------- # paste nøgle i filen
 
 # Run the Upgrade Script #
+echo -e "\e[34mRunning the upgrade script\e[0m"
 sudo /opt/netbox/upgrade.sh
 
 # Create a Super User #
+echo -e "\e[34mCreating Super User\e[0m"
 source /opt/netbox/venv/bin/activate
 cd /opt/netbox/netbox
 python3 manage.py createsuperuser
@@ -98,6 +108,7 @@ sudo ln -s /opt/netbox/contrib/netbox-housekeeping.sh /etc/cron.daily/netbox-hou
 # python3 manage.py runserver 0.0.0.0:8000 --insecure
 
 ## Gunicorn ##
+echo -e "\e[34mConfigure Gunicorn\e[0m"
 # Configuration #
 sudo cp /opt/netbox/contrib/gunicorn.py /opt/netbox/gunicorn.py
 
@@ -108,11 +119,13 @@ sudo systemctl enable --now netbox netbox-rq
 # verify it is running - systemctl status netbox.service
 
 ## Obtain an SSL Certificate ##
+echo -e "\e[34mSSL Certificate\e[0m"
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 -keyout /etc/ssl/private/netbox.key \
 -out /etc/ssl/certs/netbox.crt
 
 ## HTTP Server Installation NGINX ##
+echo -e "\e[34mNGINX Installation\e[0m"
 sudo apt install -y nginx
 sudo cp /opt/netbox/contrib/nginx.conf /etc/nginx/sites-available/netbox
 sudo rm /etc/nginx/sites-enabled/default
