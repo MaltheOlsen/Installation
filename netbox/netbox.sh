@@ -46,7 +46,7 @@ cd /opt/netbox/netbox/netbox/
 sudo cp configuration_example.py configuration.py
 
 # ALLOWED_HOSTS #
-sed -i 's/^ALLOWED_HOSTS*/ALLOWED_HOSTS = ['*']/' /opt/netbox/netbox/netbox/configuration.py
+sed -i 's/^ALLOWED_HOSTS*/ALLOWED_HOSTS = [''*'']/' /opt/netbox/netbox/netbox/configuration.py
 
 # DATABASES #
 sed -i "/^DATABASES = {/,/^}$/c\\
@@ -84,10 +84,7 @@ REDIS = {\
 python3 ../generate_secret_key.py
 
 # Run the Upgrade Script #
-deactivate
-
 sudo /opt/netbox/upgrade.sh
-sudo PYTHON=/usr/bin/python3.10 /opt/netbox/upgrade.sh
 
 # Create a Super User #
 source /opt/netbox/venv/bin/activate
