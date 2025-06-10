@@ -102,14 +102,17 @@ source /opt/netbox/venv/bin/activate
 cd /opt/netbox/netbox
 
 
-SUPERUSER_USERNAME="admin"
-SUPERUSER_EMAIL="admin@example.com"
-SUPERUSER_PASSWORD=$(openssl rand -base64 12) # Generates a 12-char random base64 string for password
 
-# You could also use a hardcoded password for testing (not recommended for production):
-# SUPERUSER_PASSWORD="YourSecurePassword123"
+read -p "SuperUser Username (default 'admin'): " SUPERUSER_USERNAME
+SUPERUSER_USERNAME=${SUPERUSER_USERNAME:-admin}
+echo -e "\e[32mSuperUser Username: $SUPERUSER_USERNAME\e[0m"
 
-# --- Script Logic ---
+read -p "SuperUser Email (default 'admin@example.com'): " SUPERUSER_EMAIL
+SUPERUSER_EMAIL=${SUPERUSER_EMAIL:-admin@example.com}
+echo -e "\e[32mSuperUser Email: $SUPERUSER_EMAIL\e[0m"
+
+read -p "SuperUser Password: " SUPERUSER_PASSWORD
+echo -e "\e[32mSuperUser Password: $SUPERUSER_PASSWORD\e[0m"
 
 echo "Creating Django superuser..."
 
@@ -118,18 +121,6 @@ DJANGO_SUPERUSER_USERNAME=$SUPERUSER_USERNAME \
 DJANGO_SUPERUSER_EMAIL=$SUPERUSER_EMAIL \
 DJANGO_SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD \
 python3 manage.py createsuperuser --noinput
-
-if [ $? -eq 0 ]; then
-    echo "Superuser '$SUPERUSER_USERNAME' created successfully."
-    echo "Username: $SUPERUSER_USERNAME"
-    echo "Email: $SUPERUSER_EMAIL"
-    echo "Password: $SUPERUSER_PASSWORD" # Be careful with logging passwords in production
-else
-    echo "Error: Superuser creation failed."
-    # If the user already exists, createsuperuser --noinput will exit with 0.
-    # You might want to add logic to check if the user already exists before attempting to create.
-    # Example: python manage.py shell -c "from django.contrib.auth import get_user_model; User=get_user_model(); print(User.objects.filter(username='admin').exists())"
-fi
 
 # Housekeeping Task #
 sudo ln -s /opt/netbox/contrib/netbox-housekeeping.sh /etc/cron.daily/netbox-housekeeping
