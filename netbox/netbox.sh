@@ -89,7 +89,8 @@ REDIS = {\
 
 # SECRET_KEY #
 python3 ../generate_secret_key.py
-------------------------------------------------------------------------------------------------------------- # paste nøgle i filen
+SECRET_KEY=$(python3 ../generate_secret_key.py)
+sed -i 's/^SECRET_KEY*/SECRET_KEY = ["'${SECRET_KEY}'"]/' /opt/netbox/netbox/netbox/configuration.py
 
 # Run the Upgrade Script #
 echo -e "\e[34mRunning the upgrade script\e[0m"
