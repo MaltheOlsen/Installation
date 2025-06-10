@@ -62,7 +62,7 @@ DATABASES = {\\
     'default': {\\
         'NAME': 'netbox',\\
         'USER': 'netbox',\\
-        'PASSWORD': 'DIT_NYE_PASSWORD',\\
+        'PASSWORD': 'Passw0rd',\\
         'HOST': 'localhost',\\
         'PORT': '',\\
         'CONN_MAX_AGE': 300,\\
