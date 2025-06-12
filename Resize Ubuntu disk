@@ -1,0 +1,19 @@
+1st step:  increase/resize disque  from  GUI console
+2nd step : Extend physical drive partition
+check free space : $sudo fdisk -l
+$growpart /dev/sda 3    (Extend physical drive partition )
+$pvdisplay     ( See  phisical drive  )
+$sudo pvresize /dev/sda3    (Instruct LVM that disk size has changed)
+$ pvdisplay    (  check physical drive if has changed  ) 
+
+
+
+[U]3rd step:  Extend  Logical  volume [/U]
+$ lvdisplay    (# View starting LV)
+$ sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv    ( # Resize LV)
+$ lvdisplay  (# View changed LV)
+
+
+4th  step  :   Resize Filesystem
+$ resize2fs /dev/ubuntu-vg/ubuntu-lv
+$ fdisk -l  (# Confirm results)
