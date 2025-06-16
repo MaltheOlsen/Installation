@@ -5,4 +5,4 @@
     <hook_url>WEBHOOK</hook_url>   # Placer din Discord webhook
     <level>8</level>   # Sender kun en discord alert for level 8 eller derover
     <alert_format>json</alert_format>
-  </integration>
+</integration>
