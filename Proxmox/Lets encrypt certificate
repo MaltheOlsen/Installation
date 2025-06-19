@@ -1,0 +1,11 @@
+# Register ACME Account (if you haven't already):
+pvenode acme account register default your-email@example.com
+# (Replace your-email@example.com with your actual email.)
+
+# Configure the Domain for the Node:
+pvenode config set --acme domains=pve.domain.com
+# (Replace pve.domain.com with your actual domain.)
+
+# Order the Certificate:
+pvenode acme cert order --force
+# After step 3, Proxmox will handle the HTTP-01 challenge (requiring port 80 to be open from the internet to your Proxmox server) and install the certificate. The pveproxy service should restart automatically.
