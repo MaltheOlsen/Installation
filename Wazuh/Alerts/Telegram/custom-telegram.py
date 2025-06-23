@@ -3,63 +3,44 @@
 import sys
 import json
 import requests
-from requests.auth import HTTPBasicAuth
+import base64 # Important for Base64 encoding
 
 # --- Configuration ---
-# Telegram Chat ID: Replace with your actual Telegram Chat ID
-# You can get your chat ID by sending a message to your bot and then
-# visiting https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates
-CHAT_ID="5342483256"
+CHAT_ID = "5342483256" # <<< IMPORTANT: Replace with your actual Chat ID
 
 # --- Helper Functions ---
 
-# Function to sanitize log content for MarkdownV2 code blocks.
-# This prevents '```' within the log from prematurely closing the Markdown code block
-# in the Telegram message, which could also lead to Python syntax errors if not handled.
-def sanitize_for_markdown_code_block(text):
-    # Ensure all newlines are Unix-style for consistency
-    text = text.replace('\r\n', '\n').replace('\r', '\n')
-    # Replace '```' with '`\``'. This renders as three backticks but breaks the Markdown parsing pattern,
-    # preventing it from being interpreted as a closing code block delimiter.
-    # It also prevents Python's f-string from misinterpreting `"""` if present in the log.
-    text = text.replace('```', '`\\``')
+# Function to escape backslashes, backticks, dots, hyphens, AND PARENTHESES for content going into inline code blocks.
+# This is the most aggressive escaping for inline code based on the errors you've observed.
+def escape_markdown_v2_literal_in_code(text):
+    text = text.replace('\\', '\\\\') # Escape backslashes first
+    text = text.replace('`', '\\`')   # Escape backticks
+    text = text.replace('.', '\\.')   # Escape dot/period (from previous error)
+    text = text.replace('-', '\\-')   # Escape hyphen (from previous error)
+    text = text.replace('(', '\\(')   # Escape opening parenthesis
+    text = text.replace(')', '\\)')   # Escape closing parenthesis
     return text
 
-# Function to escape MarkdownV2 special characters for general text that is NOT within code blocks.
-# Telegram's MarkdownV2 requires certain characters to be escaped if they appear literally
-# and are not intended for formatting.
-def escape_markdown_v2_text(text):
-    # The backslash itself must be escaped first if it's a literal character
-    text = text.replace('\\', '\\\\')
-    # List of characters that need to be escaped in MarkdownV2.
-    # Order matters for some overlapping characters (e.g., backticks and underscores).
-    # We include '`' here, but for fields going into `...` or ```...```, this particular
-    # escaping is not needed for the content *within* those blocks.
-    # For literal '!', it *must* be escaped.
-    special_chars = [
-        '_', '*', '[', ']', '(', ')', '~', '>', '#',
-        '+', '-', '=', '|', '{', '}', '.', '!'
-    ]
-    for char in special_chars:
-        text = text.replace(char, f'\\{char}')
-    return text
+# Function to sanitize log content for MarkdownV2 multiline code blocks.
+# This version uses BASE64 encoding for full_log to avoid any character parsing issues within the block.
+def sanitize_for_markdown_code_block(text):
+    text = text.replace('\r\n', '\n').replace('\r', '\n') # Normalize newlines
+    # Base64 encode the log content to avoid any character parsing issues
+    encoded_text = base64.b64encode(text.encode('utf-8')).decode('utf-8')
+    return f"Base64 Encoded Log (for debugging):\n{encoded_text}"
 
 # --- Main Script Logic ---
 if __name__ == "__main__":
-    # Wazuh passes alert file path as sys.argv[1] and other args.
-    # Your ossec.conf should pass the Telegram API URL as sys.argv[3].
     if len(sys.argv) < 4:
         print("Usage: custom-telegram.py <alert_file> <active_response_name> <telegram_api_url>", file=sys.stderr)
         sys.exit(1)
 
     alert_file_path = sys.argv[1]
-    # sys.argv[2] is typically the active response name (e.g., "telegram-alert"), not used directly here.
-    hook_url = sys.argv[3] # This should be "[https://api.telegram.org/bot](https://api.telegram.org/bot)<YOUR_BOT_TOKEN>/sendMessage"
+    hook_url = sys.argv[3]
 
-    # Read and parse the alert JSON file provided by Wazuh
     try:
-        with open(alert_file_path, 'r') as f:
-            alert_json = json.loads(f.read())
+        with open(alert_file_path, 'r') as alert_file:
+            alert_json = json.loads(alert_file.read())
     except FileNotFoundError:
         print(f"Error: Alert file not found at {alert_file_path}", file=sys.stderr)
         sys.exit(1)
@@ -68,60 +49,74 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # --- Extract and Sanitize Data Fields ---
-    # Extract data using .get() for safer access, providing "N/A" as default if missing.
-    # Convert to string to ensure consistent handling during formatting.
     rule_id = str(alert_json.get('rule', {}).get('id', "N/A"))
     alert_level = str(alert_json.get('rule', {}).get('level', "N/A"))
     description = str(alert_json.get('rule', {}).get('description', "N/A"))
-    agent_name = str(alert_json.get('agent', {}).get('name', "N/A"))
-    agent_id = str(alert_json.get('agent', {}).get('id', "N/A"))
-    full_log_raw = str(alert_json.get('full_log', "N/A"))
-    location = str(alert_json.get('location', "N/A"))
     timestamp = str(alert_json.get('timestamp', "N/A"))
 
-    # Apply sanitization for fields that go into MarkdownV2 formatting.
-    # full_log needs special handling for code blocks.
+    agent_name = str(alert_json.get('agent', {}).get('name', "N/A"))
+    agent_id = str(alert_json.get('agent', {}).get('id', "N/A"))
+    location = str(alert_json.get('location', "N/A"))
+
+    full_log_raw = str(alert_json.get('full_log', "N/A"))
+
+    # Use the updated escaping for content going into inline code blocks (now includes dot, hyphen, and parentheses escaping).
+    escaped_rule_id = escape_markdown_v2_literal_in_code(rule_id)
+    escaped_alert_level = escape_markdown_v2_literal_in_code(alert_level)
+    escaped_description = escape_markdown_v2_literal_in_code(description)
+    escaped_timestamp = escape_markdown_v2_literal_in_code(timestamp)
+    escaped_agent_name = escape_markdown_v2_literal_in_code(agent_name)
+    escaped_agent_id = escape_markdown_v2_literal_in_code(agent_id)
+    escaped_location = escape_markdown_v2_literal_in_code(location)
+
+    # For full_log, apply the BASE64 encoding and wrap it in code block formatting.
     sanitized_full_log = sanitize_for_markdown_code_block(full_log_raw)
 
-    # For the header line which is outside backticks, we manually escape the '!'
-    alert_header_text = "*Wazuh Alert\\!*" # Explicitly escape '!'
+    # Define alert severity emojis
+    severity_emojis = {
+        '0': '⚪️', '1': '🟢', '2': '🔵', '3': '🟡', '4': '🟠',
+        '5': '🔴', '6': '🚨', '7': '🚨', '8': '🚨', '9': '🚨',
+        '10': '‼️', '11': '‼️', '12': '‼️', '13': '‼️', '14': '‼️', '15': '‼️'
+    }
+    alert_emoji = severity_emojis.get(alert_level, '⚪️')
 
     # --- Construct Telegram Message ---
     msg_data = {}
     msg_data['chat_id'] = CHAT_ID
 
-    # Use an f-string for easy formatting.
-    # Ensure all parts that are not explicitly Markdown formatting (like `*` for bold)
-    # are either wrapped in backticks or escaped if they contain Markdown special characters.
     message_text = f"""
-{alert_header_text}
+{alert_emoji} *Wazuh Alert Detected\\!* {alert_emoji}
 
-*Timestamp:* `{timestamp}`
-*Rule ID:* `{rule_id}`
-*Level:* `{alert_level}`
-*Description:* `{description}`
-*Agent Name:* `{agent_name}` \(ID: `{agent_id}`\)
-*Location:* `{location}`
+*Description:* `{escaped_description}`
+
+*Details:*
+• *Rule ID:* `{escaped_rule_id}`
+• *Level:* `{escaped_alert_level}`
+• *Timestamp:* `{escaped_timestamp}`
+• *Agent:* `{escaped_agent_name}` \(ID: `{escaped_agent_id}`\)
+• *Location:* `{escaped_location}`
 
 *Full Log:*
+```
 {sanitized_full_log}
-
-""" 
+```
+_This alert was generated by Wazuh\._
+"""
 
     msg_data['text'] = message_text
-    msg_data['parse_mode'] = 'MarkdownV2' # Specify MarkdownV2 parsing mode
+    msg_data['parse_mode'] = 'MarkdownV2'
 
     headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
 
     # --- Send the Telegram Request ---
     try:
         response = requests.post(hook_url, headers=headers, data=json.dumps(msg_data))
-        response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
+        response.raise_for_status()
         print(f"Telegram message sent successfully! Response: {response.json()}")
     except requests.exceptions.RequestException as e:
         print(f"Error sending Telegram message: {e}", file=sys.stderr)
         if hasattr(e, 'response') and e.response is not None:
             print(f"Telegram API Response (Error): {e.response.text}", file=sys.stderr)
-        sys.exit(1) # Exit with an error code if sending fails
+        sys.exit(1)
 
-    sys.exit(0) # Exit successfully
+    sys.exit(0)
