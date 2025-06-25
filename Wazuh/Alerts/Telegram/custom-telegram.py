@@ -6,7 +6,7 @@ import requests
 import base64 # Important for Base64 encoding
 
 # --- Configuration ---
-CHAT_ID = "5342483256" # <<< IMPORTANT: Replace with your actual Chat ID
+CHAT_ID = "XXX" # <<< IMPORTANT: Replace with your actual Chat ID
 
 # --- Helper Functions ---
 
