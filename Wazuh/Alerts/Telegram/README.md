@@ -5,15 +5,15 @@ Send wazuh alert to telegram by telegram bot.
 
 2. Check reqirements with this command :
 ```
-#pip install requests
+sudo apt install python3-requests
 ```
 
 3. Insert your **CHAT ID** to **custom-telegram.py**. Copy **custom-telegram** and **custom-telegram.py** to **/var/ossec/integrations/**
 
 4. Set correct permission to those files:
 ```
-#chown root:wazuh /var/ossec/integrations/custom-telegram*
-#chmod 750 /var/ossec/integrations/custom-telegram*
+sudo chown root:wazuh /var/ossec/integrations/custom-telegram*
+sudo chmod 750 /var/ossec/integrations/custom-telegram*
 ```
 
 5. Insert your API KEY to these line and copy those lines to **/var/ossec/etc/ossec.conf**
@@ -27,5 +27,5 @@ Send wazuh alert to telegram by telegram bot.
 ```
 6. Restart wazuh server
 ```
-#systemctl restart wazuh-manager
+sudo systemctl restart wazuh-manager
 ```
