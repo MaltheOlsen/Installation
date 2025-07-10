@@ -48,6 +48,7 @@ AUTH_LDAP_USER_ATTR_MAP = {
     "last_name": "sn",
 }
 
+#DONT CHANGE THIS#
 AUTH_LDAP_USER_QUERY_FIELD = "username"
 
 # This search ought to return all groups to which the user belongs. django_auth_ldap uses this to determine group
