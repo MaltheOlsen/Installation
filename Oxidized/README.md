@@ -1,4 +1,4 @@
-# 🚀 Semaphore Auto Install Script
+# 🚀 Oxidized Auto Install Script
 
 This repository contains an automated installation scripts for setting up **Oxidized** on an Ubuntu server 24.04.
 
