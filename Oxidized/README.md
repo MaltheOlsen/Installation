@@ -12,7 +12,7 @@ This repository contains an automated installation scripts for setting up **Oxid
 To fetch the latest version of the `Oxidized-AutoInstall.sh` script, run the following command:
 
 ```bash
-wget https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Oxidized/Oxidized-AutoInstall.sh?token=GHSAT0AAAAAADED733VNLPSEUC2YJCZZUKQ2CADGTQ -O Oxidized-AutoInstall.sh
+wget https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Oxidized/Oxidized-AutoInstall.sh -O Oxidized-AutoInstall.sh
 ```
 
 # ⚙️ Change Execute Permissions
