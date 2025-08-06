@@ -14,15 +14,15 @@ echo "Enter your Oxidized username:"
 read -r USERNAME
 
 echo "Enter your Oxidized password:"
-read -rs PASSWORD
+read -r PASSWORD
 echo
 
 echo "Enter your Oxidized enable password:"
-read -rs ENABLE_PASSWORD
+read -r ENABLE_PASSWORD
 echo
 
 echo "Enter the FQDN or IP of this device:"
-read -rs FQDN
+read -r FQDN
 echo
 
 sudo tee "$WORKINGDIR/config" > /dev/null <<EOF
